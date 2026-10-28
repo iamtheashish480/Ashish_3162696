@@ -1,0 +1,10 @@
+--- a/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
++++ b/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
+@@ -10,7 +10,7 @@ namespace InvoiceApp.Domain;
+     public decimal CalculateEarlyPaymentDiscount(decimal amount, DateTime dueDate, DateTime paymentDate)
+     {
+-        var daysUntilDue = (dueDate - paymentDate).Days;
++        var daysUntilDue = (dueDate.Date - paymentDate.Date).Days;
+         if (daysUntilDue >= 10)
+         {
+             return amount * 0.02m;

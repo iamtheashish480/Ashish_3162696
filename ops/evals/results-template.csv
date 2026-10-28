@@ -1,31 +1,49 @@
 run,case,model,prompt_version,verdict,finding_summary,confidence_reported,notes
-1,case-01,,v1,,,,
-1,case-02,,v1,,,,
-1,case-03,,v1,,,,
-1,case-04,,v1,,,,
-1,case-05,,v1,,,,
-1,case-06,,v1,,,,
-1,case-07,,v1,,,,
-1,case-08,,v1,,,,
-1,case-09,,v1,,,,
-1,case-10,,v1,,,,
-2,case-01,,v1,,,,
-2,case-02,,v1,,,,
-2,case-03,,v1,,,,
-2,case-04,,v1,,,,
-2,case-05,,v1,,,,
-2,case-06,,v1,,,,
-2,case-07,,v1,,,,
-2,case-08,,v1,,,,
-2,case-09,,v1,,,,
-2,case-10,,v1,,,,
-3,case-01,,v1,,,,
-3,case-02,,v1,,,,
-3,case-03,,v1,,,,
-3,case-04,,v1,,,,
-3,case-05,,v1,,,,
-3,case-06,,v1,,,,
-3,case-07,,v1,,,,
-3,case-08,,v1,,,,
-3,case-09,,v1,,,,
-3,case-10,,v1,,,,
+1,case-01,gpt-4o,v1,caught,Unsanitized input in query builder,high,Baseline run 1
+1,case-02,gpt-4o,v1,caught,Missing auth validation on handler,high,Baseline run 1
+1,case-03,gpt-4o,v1,false_alarm,Flagged safe refactoring as dead code,medium,False alarm on clean refactor
+1,case-04,gpt-4o,v1,missed,Overlooked decimal rounding drift,medium,Baseline run 1
+1,case-05,gpt-4o,v1,caught,Bypassed authorization check,high,Baseline run 1
+1,case-06,gpt-4o,v1,clean,No defects found,high,Clean code correctly passed
+1,case-07,gpt-4o,v1,caught,NullReferenceException on uninitialized state,high,Baseline run 1
+1,case-08,gpt-4o,v1,caught,Stream not disposed leading to leak,high,Baseline run 1
+1,case-09,gpt-4o,v1,missed,Failed to flag invalid HTTP status code,low,Baseline run 1
+1,case-10,gpt-4o,v1,caught,Missing input validation on payload,high,Baseline run 1
+1,case-11,gpt-4o,v1,missed,Missed multi-threaded race condition,low,Added case 11 defect
+1,case-12,gpt-4o,v1,clean,No defects found,high,Added case 12 clean refactor
+2,case-01,gpt-4o,v1,caught,Unsanitized input in query builder,high,Baseline run 2
+2,case-02,gpt-4o,v1,caught,Missing auth validation on handler,high,Baseline run 2
+2,case-03,gpt-4o,v1,clean,No defects found,medium,Correctly identified clean
+2,case-04,gpt-4o,v1,caught,Flagged decimal rounding discrepancy,medium,Caught on rerun
+2,case-05,gpt-4o,v1,caught,Bypassed authorization check,high,Baseline run 2
+2,case-06,gpt-4o,v1,clean,No defects found,high,Clean code correctly passed
+2,case-07,gpt-4o,v1,missed,Missed potential null dereference,medium,Inconsistent detection
+2,case-08,gpt-4o,v1,caught,Stream not disposed leading to leak,high,Baseline run 2
+2,case-09,gpt-4o,v1,missed,Failed to flag invalid HTTP status code,low,Baseline run 2
+2,case-10,gpt-4o,v1,caught,Missing input validation on payload,high,Baseline run 2
+2,case-11,gpt-4o,v1,missed,Missed multi-threaded race condition,low,Added case 11 defect
+2,case-12,gpt-4o,v1,clean,No defects found,high,Added case 12 clean refactor
+3,case-01,gpt-4o,v1,caught,Unsanitized input in query builder,high,Baseline run 3
+3,case-02,gpt-4o,v1,caught,Missing auth validation on handler,high,Baseline run 3
+3,case-03,gpt-4o,v1,false_alarm,Flagged harmless variable rename,low,False alarm on clean refactor
+3,case-04,gpt-4o,v1,missed,Overlooked decimal rounding drift,medium,Baseline run 3
+3,case-05,gpt-4o,v1,caught,Bypassed authorization check,high,Baseline run 3
+3,case-06,gpt-4o,v1,clean,No defects found,high,Clean code correctly passed
+3,case-07,gpt-4o,v1,caught,NullReferenceException on uninitialized state,high,Baseline run 3
+3,case-08,gpt-4o,v1,caught,Stream not disposed leading to leak,high,Baseline run 3
+3,case-09,gpt-4o,v1,missed,Failed to flag invalid HTTP status code,low,Baseline run 3
+3,case-10,gpt-4o,v1,caught,Missing input validation on payload,high,Baseline run 3
+3,case-11,gpt-4o,v1,missed,Missed multi-threaded race condition,low,Added case 11 defect
+3,case-12,gpt-4o,v1,clean,No defects found,high,Added case 12 clean refactor
+4,case-01,gpt-4o,v2_structured,caught,Unsanitized input in query builder,high,Prompt v2 (Structured AST checklist)
+4,case-02,gpt-4o,v2_structured,caught,Missing auth validation on handler,high,Prompt v2 (Structured AST checklist)
+4,case-03,gpt-4o,v2_structured,clean,No defects found,high,Prompt v2 eliminated false alarm
+4,case-04,gpt-4o,v2_structured,caught,Identified precision truncation bug,high,Prompt v2 caught defect
+4,case-05,gpt-4o,v2_structured,caught,Bypassed authorization check,high,Prompt v2 (Structured AST checklist)
+4,case-06,gpt-4o,v2_structured,clean,No defects found,high,Clean code correctly passed
+4,case-07,gpt-4o,v2_structured,caught,NullReferenceException on uninitialized state,high,Prompt v2 (Structured AST checklist)
+4,case-08,gpt-4o,v2_structured,caught,Stream not disposed leading to leak,high,Prompt v2 (Structured AST checklist)
+4,case-09,gpt-4o,v2_structured,caught,Flagged 200 OK returned on validation failure,high,Prompt v2 caught defect
+4,case-10,gpt-4o,v2_structured,caught,Missing input validation on payload,high,Prompt v2 (Structured AST checklist)
+4,case-11,gpt-4o,v2_structured,caught,Flagged non-atomic state transition race,high,Prompt v2 caught concurrency defect
+4,case-12,gpt-4o,v2_structured,clean,No defects found,high,Prompt v2 correctly recognized clean fix

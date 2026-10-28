@@ -16,14 +16,7 @@ public class ApprovalService
     public Invoice Submit(string invoiceId)
     {
         var invoice = Find(invoiceId);
-
-        if (invoice.Status != InvoiceStatus.Draft)
-        {
-            throw new InvalidOperationException(
-                $"Invoice {invoiceId} is {invoice.Status}; only drafts can be submitted.");
-        }
-
-        invoice.Status = InvoiceStatus.PendingApproval;
+        invoice.Submit();
         _repository.Update(invoice);
         return invoice;
     }
@@ -31,11 +24,7 @@ public class ApprovalService
     public Invoice Approve(string invoiceId, string approver)
     {
         var invoice = Find(invoiceId);
-        EnsurePending(invoice);
-
-        invoice.Status = InvoiceStatus.Approved;
-        invoice.DecidedBy = approver;
-        invoice.DecidedAt = DateTime.UtcNow;
+        invoice.Approve(approver);
         _repository.Update(invoice);
         return invoice;
     }
@@ -48,12 +37,7 @@ public class ApprovalService
         }
 
         var invoice = Find(invoiceId);
-        EnsurePending(invoice);
-
-        invoice.Status = InvoiceStatus.Rejected;
-        invoice.DecidedBy = approver;
-        invoice.DecidedAt = DateTime.UtcNow;
-        invoice.DecisionNote = reason;
+        invoice.Reject(approver, reason);
         _repository.Update(invoice);
         return invoice;
     }
@@ -61,13 +45,4 @@ public class ApprovalService
     private Invoice Find(string invoiceId) =>
         _repository.GetById(invoiceId)
         ?? throw new KeyNotFoundException($"Invoice {invoiceId} was not found.");
-
-    private static void EnsurePending(Invoice invoice)
-    {
-        if (invoice.Status != InvoiceStatus.PendingApproval)
-        {
-            throw new InvalidOperationException(
-                $"Invoice {invoice.Id} is {invoice.Status}; only pending invoices can be decided.");
-        }
-    }
 }

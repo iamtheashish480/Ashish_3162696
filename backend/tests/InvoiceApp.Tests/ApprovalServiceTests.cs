@@ -5,8 +5,29 @@ namespace InvoiceApp.Tests;
 
 public class ApprovalServiceTests
 {
-    private static Invoice InvoiceWith(string id, InvoiceStatus status) =>
-        new() { Id = id, CustomerName = "Test School", Amount = 100m, Status = status };
+    // Before:
+    // After:
+    private static Invoice InvoiceWith(string id, InvoiceStatus status)
+    {
+        var invoice = new Invoice { Id = id, CustomerName = "Test School", Amount = 100m };
+
+        if (status == InvoiceStatus.PendingApproval)
+        {
+            invoice.Submit();
+        }
+        else if (status == InvoiceStatus.Approved)
+        {
+            invoice.Submit();
+            invoice.Approve("setup.approver");
+        }
+        else if (status == InvoiceStatus.Rejected)
+        {
+            invoice.Submit();
+            invoice.Reject("setup.approver", "setup reason");
+        }
+
+        return invoice;
+    }
 
     private static ApprovalService ServiceFor(params Invoice[] invoices) =>
         new(new FakeInvoiceRepository(invoices));

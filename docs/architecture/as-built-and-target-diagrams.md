@@ -1,6 +1,6 @@
-# Architecture Diagrams & System Evolution
+# Architecture Diagrams and System Evolution
 
-## 1. As-Built Container View (C4 Level 2)
+## As-Built Container View (C4 Level 2)
 
 ```mermaid
 graph TD
@@ -16,44 +16,46 @@ graph TD
     end
     subgraph "InvoiceApp.Domain"
         ApprovalSvc["ApprovalService"]
-        DiscountCalc["DiscountCalculator"]
+        DiscountCalc["DiscountCalculator (not in these flows)"]
         InvoiceModel["Invoice Entity & InvoiceStatus"]
     end
 
     User -->|HTTP GET /| StaticFiles
-    User -->|HTTP POST /api/auth| AuthCtrl
-    AuthCtrl --> SessionStore
-    User -->|HTTP REST /api/invoices, /api/approvals| SessionAuth
+    User -->|POST /api/auth/login| AuthCtrl
+    AuthCtrl -->|Create opaque bearer token| SessionStore
+    User -->|Bearer token on protected API requests| SessionAuth
     SessionAuth --> ApprovalsCtrl
     SessionAuth --> InvoicesCtrl
     ApprovalsCtrl --> ApprovalSvc
     InvoicesCtrl --> Repo
+    InvoicesCtrl --> ApprovalSvc
     ApprovalSvc --> Repo
-    ApprovalSvc --> DiscountCalc
     ApprovalSvc --> InvoiceModel
 ```
 
 ### Component Citations
-* `Static UI Files`: `backend/src/InvoiceApp.Api/wwwroot/index.html`, `app.js`, `styles.css`
-* `SessionAuthMiddleware`: `backend/src/InvoiceApp.Api/Auth/SessionAuthMiddleware.cs`
-* `SessionStore`: `backend/src/InvoiceApp.Api/Auth/SessionStore.cs`
-* `ApprovalsController`: `backend/src/InvoiceApp.Api/Controllers/ApprovalsController.cs`
-* `InvoicesController`: `backend/src/InvoiceApp.Api/Controllers/InvoicesController.cs`
-* `InMemoryInvoiceRepository`: `backend/src/InvoiceApp.Api/InMemoryInvoiceRepository.cs`
-* `ApprovalService`: `backend/src/InvoiceApp.Domain/ApprovalService.cs`
-* `DiscountCalculator`: `backend/src/InvoiceApp.Domain/DiscountCalculator.cs`
-* `Invoice`: `backend/src/InvoiceApp.Domain/Invoice.cs`
+- `Static UI files`: `backend/src/InvoiceApp.Api/wwwroot/index.html`, `app.js`, `styles.css`
+- `SessionAuthMiddleware`: `backend/src/InvoiceApp.Api/Auth/SessionAuthMiddleware.cs`
+- `SessionStore`: `backend/src/InvoiceApp.Api/Auth/SessionStore.cs`
+- `AuthController`: `backend/src/InvoiceApp.Api/Controllers/AuthController.cs`
+- `ApprovalsController`: `backend/src/InvoiceApp.Api/Controllers/ApprovalsController.cs`
+- `InvoicesController`: `backend/src/InvoiceApp.Api/Controllers/InvoicesController.cs`
+- `InMemoryInvoiceRepository`: `backend/src/InvoiceApp.Api/InMemoryInvoiceRepository.cs`
+- `ApprovalService`: `backend/src/InvoiceApp.Domain/ApprovalService.cs`
+- `DiscountCalculator`: `backend/src/InvoiceApp.Domain/DiscountCalculator.cs`
+- `Invoice`: `backend/src/InvoiceApp.Domain/Invoice.cs`
 
-### Inferred Items Corrected Against Codebase
-| Agent Inferred Item | Actual Codebase Reality |
-|---|---|
-| Assumed database connection via EF Core | Entirely in-memory (`InMemoryInvoiceRepository` using a `ConcurrentDictionary`) |
+### Inferences Corrected Against the Codebase
+
+| Agent-inferred item | Actual codebase reality |
+| --- | --- |
+| Assumed database connection via EF Core | Entirely in memory; `InMemoryInvoiceRepository` stores invoices in a lock-protected `List<Invoice>`. |
 | Assumed JWT Bearer tokens | Simple custom header `X-Session-Id` mapped in memory |
-| Assumed external notification worker | No background workers; synchronous HTTP request-response only |
+| Assumed external notification worker | No background workers; requests are handled synchronously. |
 
 ---
 
-## 2. As-Built Approval Sequence Diagram
+## As-Built Approval Sequence Diagram
 
 ```mermaid
 sequenceDiagram
@@ -66,20 +68,20 @@ sequenceDiagram
     participant Model as Invoice
 
     User->>UI: Clicks "Approve"
-    UI->>Ctrl: POST /api/approvals/{id} (Headers: X-Session-Id)
-    Ctrl->>Svc: ApproveAsync(id, approverRole)
-    Svc->>Repo: GetByIdAsync(id)
+    UI->>Ctrl: POST /api/approvals/{id}/approve (Authorization: Bearer token)
+    Ctrl->>Svc: Approve(id, session.Username)
+    Svc->>Repo: GetById(id)
     Repo-->>Svc: Invoice entity
-    Svc->>Model: CanTransitionTo(Approved) & SetStatus(Approved)
-    Svc->>Repo: SaveAsync(invoice)
-    Svc-->>Ctrl: Result<Invoice>
+    Svc->>Model: Approve(approver)
+    Svc->>Repo: Update(invoice)
+    Svc-->>Ctrl: Invoice
     Ctrl-->>UI: 200 OK (Updated Invoice JSON)
     UI-->>User: Refresh list & status badge
 ```
 
 ---
 
-## 3. Target State Architecture (Tier-2 Production)
+## Target State Architecture (Tier-2 Production)
 
 ```mermaid
 graph TD
@@ -122,4 +124,4 @@ graph TD
     classDef planned fill:#f9f,stroke:#333,stroke-dasharray: 5 5;
     class SQL,OutboxProcessor,ASB,PayEx planned;
 ```
-*(Items highlighted with dashed borders represent planned components not yet present in codebase).*
+> Items highlighted with dashed borders represent planned components that are not yet present in the codebase.

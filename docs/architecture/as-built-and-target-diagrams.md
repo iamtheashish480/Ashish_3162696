@@ -1,6 +1,6 @@
 # Architecture: As-Built and Target
 
-Paths are relative to `backend/src/` unless noted. The as-built diagrams are a static read of the code, not a runtime trace. Both were rendered through the draw.io Mermaid MCP to confirm the syntax parses.
+Paths are relative to `backend/src/` unless noted. The as-built diagrams are a static read of the code, not a runtime trace. All three diagrams were rendered from their Mermaid source using the available draw.io MCP Mermaid renderer (`io-draw-mcp-create_diagram`). A separate Mermaid MCP server was not available in this workspace, so this documents the actual tool used rather than claiming a different MCP.
 
 ## 1. As-built container view
 

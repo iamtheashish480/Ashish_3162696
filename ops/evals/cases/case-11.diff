@@ -1,11 +1,29 @@
---- a/backend/src/InvoiceApp.Domain/ApprovalService.cs
-+++ b/backend/src/InvoiceApp.Domain/ApprovalService.cs
-@@ -42,6 +42,8 @@ namespace InvoiceApp.Domain;
-         if (invoice == null)
-             return Result.Failure("Invoice not found");
-
-+        // Race condition: status check and state mutation are not synchronized across threads
-+        if (invoice.Status != InvoiceStatus.Pending) return Result.Failure("Already processed");
-         invoice.Status = InvoiceStatus.Approved;
-         await _repository.SaveAsync(invoice);
-         return Result.Success();
+diff --git a/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs b/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
+--- a/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
++++ b/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
+@@ -6,6 +6,28 @@ namespace InvoiceApp.Tests;
+ public class ArchitectureTests
+ {
++    // Guards the rule: the Domain project must not depend on the Api, ASP.NET Core or EF Core.
++    [Fact]
++    public void Domain_Should_Not_Depend_On_External_Layers()
++    {
++        var domainAssembly = typeof(Invoice).Assembly;
++        var referencedAssemblies = domainAssembly.GetReferencedAssemblies();
++
++        var forbiddenDependencies = new[]
++        {
++            "InvoiceApp.Api",
++            "Microsoft.AspNetCore",
++            "Microsoft.EntityFrameworkCore"
++        };
++
++        foreach (var dependency in referencedAssemblies)
++        {
++            foreach (var forbidden in forbiddenDependencies)
++            {
++                Assert.DoesNotContain(forbidden, dependency.Name, StringComparison.OrdinalIgnoreCase);
++            }
++        }
++    }
+ }

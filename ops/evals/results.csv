@@ -1,0 +1,61 @@
+run,case,model,prompt_version,verdict,finding_summary,confidence_reported,notes
+1,case-01,gpt-5.6-luna,v1,caught,null Ids -> NullReferenceException,high,
+1,case-02,gpt-5.6-luna,v1,caught,SQL injection via customer and status,high,
+1,case-03,gpt-5.6-luna,v1,caught,ToZero truncation changes rounding,high,worked example in the finding was muddled
+1,case-04,gpt-5.6-luna,v1,clean,no defects,,clean case
+1,case-05,gpt-5.6-luna,v1,caught,Delete missing RequireRole Admin,high,
+1,case-06,gpt-5.6-luna,v1,clean,no defects,,clean case
+1,case-07,gpt-5.6-luna,v1,caught,logs invoice and session objects,high,
+1,case-08,gpt-5.6-luna,v1,caught,Dictionary not thread safe; ContainsKey+set not atomic,high,
+1,case-09,gpt-5.6-luna,v1,caught,README claim that sign out/in resets data is untrue,high,
+1,case-10,gpt-5.6-luna,v1,caught,catch-all returns 200 completed,high,
+1,case-11,gpt-5.6-luna,v1,missed,said test is correct,,vacuous guard not noticed
+1,case-12,gpt-5.6-luna,v1,clean,no defects,,clean case
+2,case-01,gpt-5.6-luna,v1,caught,null Ids and null body,high,
+2,case-02,gpt-5.6-luna,v1,caught,SQL injection,high,
+2,case-03,gpt-5.6-luna,v1,caught,ToZero truncation,high,
+2,case-04,gpt-5.6-luna,v1,clean,no defects,,
+2,case-05,gpt-5.6-luna,v1,caught,Delete missing RequireRole,high,
+2,case-06,gpt-5.6-luna,v1,clean,no defects,,
+2,case-07,gpt-5.6-luna,v1,caught,sensitive logging,high,
+2,case-08,gpt-5.6-luna,v1,caught,Dictionary race,high,
+2,case-09,gpt-5.6-luna,v1,caught,README reset claim misleading,medium,
+2,case-10,gpt-5.6-luna,v1,caught,catch-all hides failures,high,
+2,case-11,gpt-5.6-luna,v1,missed,no defects found,,
+2,case-12,gpt-5.6-luna,v1,clean,no defects,,
+3,case-01,gpt-5.6-luna,v1,caught,null Ids,high,
+3,case-02,gpt-5.6-luna,v1,caught,SQL injection,high,
+3,case-03,gpt-5.6-luna,v1,caught,ToZero truncation,high,
+3,case-04,gpt-5.6-luna,v1,clean,no defects,,
+3,case-05,gpt-5.6-luna,v1,caught,Delete missing RequireRole,high,
+3,case-06,gpt-5.6-luna,v1,clean,no defects,,
+3,case-07,gpt-5.6-luna,v1,caught,sensitive logging,high,
+3,case-08,gpt-5.6-luna,v1,caught,Dictionary race,high,
+3,case-09,gpt-5.6-luna,v1,missed,no defects found,,
+3,case-10,gpt-5.6-luna,v1,caught,catch-all hides failures,high,
+3,case-11,gpt-5.6-luna,v1,missed,said transitive references are not checked,high,right area wrong reason; scored missed
+3,case-12,gpt-5.6-luna,v1,clean,no defects,,
+4,case-01,gpt-5.6-luna,v2_checklist,caught,null Ids (plus partial-apply note),high,
+4,case-02,gpt-5.6-luna,v2_checklist,caught,SQL injection,high,
+4,case-03,gpt-5.6-luna,v2_checklist,caught,ToZero truncation,high,
+4,case-04,gpt-5.6-luna,v2_checklist,clean,no defects,,
+4,case-05,gpt-5.6-luna,v2_checklist,caught,Delete missing RequireRole,high,
+4,case-06,gpt-5.6-luna,v2_checklist,false_alarm,test only uses spaces not tabs,medium,borderline: test-coverage nitpick
+4,case-07,gpt-5.6-luna,v2_checklist,caught,sensitive logging,high,
+4,case-08,gpt-5.6-luna,v2_checklist,caught,Dictionary race,high,
+4,case-09,gpt-5.6-luna,v2_checklist,missed,no defects found,,
+4,case-10,gpt-5.6-luna,v2_checklist,caught,catch-all hides failures,high,
+4,case-11,gpt-5.6-luna,v2_checklist,caught,unused references dropped by compiler so guard passes vacuously,high,prompt was written with this defect in mind
+4,case-12,gpt-5.6-luna,v2_checklist,false_alarm,Directory.Build.props could hide dependencies,high,borderline: no such file exists in the repo
+5,case-01,claude-sonnet-5,v1,caught,null Ids NullReferenceException,high,also raised two lesser points
+5,case-02,claude-sonnet-5,v1,caught,SQL injection,high,
+5,case-03,claude-sonnet-5,v1,caught,ToZero rounding regression,high,
+5,case-04,claude-sonnet-5,v1,clean,pure rename no defects,,
+5,case-05,claude-sonnet-5,v1,caught,Delete missing RequireRole,high,also noted missing 404 (extra)
+5,case-06,claude-sonnet-5,v1,clean,no defects,,
+5,case-07,claude-sonnet-5,v1,caught,logs full invoice and session objects,high,
+5,case-08,claude-sonnet-5,v1,caught,Dictionary not thread safe and non-atomic add,high,
+5,case-09,claude-sonnet-5,v1,caught,sign out/in reset claim unsupported,medium,
+5,case-10,claude-sonnet-5,v1,caught,catch-all returns 200 and hides failures,high,
+5,case-11,claude-sonnet-5,v1,missed,said test logic is sound,,vacuous guard not noticed
+5,case-12,claude-sonnet-5,v1,false_alarm,path discovery from BaseDirectory is fragile,medium,borderline: portability nitpick on a clean case

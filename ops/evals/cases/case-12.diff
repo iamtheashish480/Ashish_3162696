@@ -1,10 +1,38 @@
---- a/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
-+++ b/backend/src/InvoiceApp.Domain/DiscountCalculator.cs
-@@ -10,7 +10,7 @@ namespace InvoiceApp.Domain;
-     public decimal CalculateEarlyPaymentDiscount(decimal amount, DateTime dueDate, DateTime paymentDate)
+diff --git a/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs b/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
+index db81270..729d598 100644
+--- a/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
++++ b/backend/tests/InvoiceApp.Tests/ArchitectureTests.cs
+@@ -30,6 +30,33 @@ public class ArchitectureTests
+         }
+     }
+ 
++    [Fact]
++    public void Domain_Project_Declares_No_Dependencies()
++    {
++        var projectFile = FindDomainProjectFile();
++        var declaredDependencies = System.Xml.Linq.XDocument.Load(projectFile)
++            .Descendants()
++            .Where(element => element.Name.LocalName is "ProjectReference" or "PackageReference" or "FrameworkReference")
++            .Select(element => element.Attribute("Include")?.Value ?? element.ToString())
++            .ToList();
++
++        Assert.True(declaredDependencies.Count == 0,
++            "InvoiceApp.Domain must stay dependency-free but declares: " + string.Join(", ", declaredDependencies));
++    }
++
++    private static string FindDomainProjectFile()
++    {
++        var directory = new DirectoryInfo(AppContext.BaseDirectory);
++        while (directory is not null)
++        {
++            var candidate = Path.Combine(directory.FullName, "src", "InvoiceApp.Domain", "InvoiceApp.Domain.csproj");
++            if (File.Exists(candidate)) return candidate;
++            directory = directory.Parent;
++        }
++
++        throw new FileNotFoundException("Could not locate InvoiceApp.Domain.csproj above " + AppContext.BaseDirectory);
++    }
++
+     [Fact]
+     public void Domain_Entities_Must_Not_Have_Public_Setters_On_Core_State()
      {
--        var daysUntilDue = (dueDate - paymentDate).Days;
-+        var daysUntilDue = (dueDate.Date - paymentDate.Date).Days;
-         if (daysUntilDue >= 10)
-         {
-             return amount * 0.02m;

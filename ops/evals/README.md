@@ -1,6 +1,6 @@
-# Review eval
+﻿# AI Review Evaluation
 
-Ten fixed cases for measuring how well a review prompt performs on this
+Twelve fixed cases for measuring how well a review prompt performs on this
 codebase. Each case is a diff in `cases/`. Some contain a defect and some do
 not; which is which is not recorded here.
 
@@ -24,10 +24,10 @@ that decides whether anyone keeps using the reviewer.
 2. Give the agent the case diff and the review prompt below. Nothing else.
 3. Record what it reported in `results.csv`, using `results-template.csv` as
    the starting point.
-4. Repeat the whole set three times. Output varies between runs, so a single
-   pass gives you an anecdote rather than a rate.
-5. Change exactly one thing — the prompt, the model, or the context file —
-   and run the set again.
+4. Run the full set three times with the baseline configuration. Output varies
+   between runs, so a single pass gives you an anecdote rather than a rate.
+5. For a fourth run, change exactly one variable — such as the prompt, model,
+   or context file — and run the full set again.
 
 ## The review prompt
 
@@ -45,3 +45,16 @@ cannot act on later.
 
 For the clean cases, style suggestions are not false alarms. A false alarm is
 the review asserting a defect that is not there.
+
+## Recorded results
+
+[results.csv](results.csv) holds the recorded runs, one row per case per run (60 rows). Columns: `run`, `case`, `model`, `prompt_version`, `verdict` (`caught`, `missed`, `clean` or `false_alarm`), `finding_summary`, `confidence_reported`, `notes`.
+
+| Run | Model | Prompt |
+| --- | --- | --- |
+| 1-3 | gpt-5.6-luna | v1 (the prompt above) |
+| 4 | gpt-5.6-luna | v2_checklist (v1 plus a paragraph on compile-but-wrong code, guards that can fail, and documentation claims) |
+| 5 | claude-sonnet-5 | v1 |
+
+Cases 11 and 12 were added by the author (11 defect, 12 clean). `results-template.csv` is the header row only. Analysis and confidence are in [EVALUATION_REPORT.md](EVALUATION_REPORT.md).
+
